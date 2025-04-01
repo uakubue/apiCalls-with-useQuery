@@ -1,43 +1,45 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query';
 import React, { useState, useEffect } from 'react';
 // import "./Demo.css";
 
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  address: {
+      city: string;
+  };
+  phone: number
+}
 
-const Users = () => {
-
-
-
-  interface User {
-    id: number;
-    name: string;
-    email: string;
-    address: {
-        city: string;
-    };
-    phone: number
-  }
+async function fetchUsers(){
 
   const BASE_URL = "https://jsonplaceholder.typicode.com";
 
-  const [users, setUsers] = React.useState([]);
+  const response = await fetch(`${BASE_URL}/users`)
 
-  useEffect(() => {
-    const fetchData = async() => {
-      const response = await fetch(`${BASE_URL}/users`)
-      const usersData = await response.json();
-      
+  return response.json()
+}
 
-      console.log(usersData)
-      setUsers(usersData);
 
-    }
+const Users = () => {
 
-    fetchData()
-  }, [])
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["users"], 
+    queryFn: fetchUsers
+  })
 
-  console.log(users)
+
+  console.log(data)
+
+  if(isLoading){
+    return <div>Loading...</div>
+  }else if (error){
+    console.error("Ooops something went wrong")
+  }
 
   return (
     <div className='mx-4'>
@@ -45,7 +47,7 @@ const Users = () => {
 
       <div className='data_div grid grid-cols-1 md:grid-cols-4 grid-row-3 gap-6 bg-blue-600'>
         {
-          users.map((item: User, id) => {
+          data.map((item: User, id: number) => {
             return(
               <div className='Item_div bg-[#e1edbd] rounded-lg p-3' key={item.id}>
                 Name: {item.name}
