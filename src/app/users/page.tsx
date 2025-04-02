@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import React, { useState, useEffect } from 'react';
-// import "./Demo.css";
+import "./page.css";
 
 
 interface User {
@@ -36,7 +36,11 @@ const Users = () => {
   console.log(data)
 
   if(isLoading){
-    return <div>Loading...</div>
+    return (
+      <div className="wrapper">
+        <div id="preloader"></div>
+      </div>
+    )
   }else if (error){
     console.error("Ooops something went wrong")
   }
@@ -49,7 +53,7 @@ const Users = () => {
         {
           data.map((item: User, id: number) => {
             return(
-              <div className='Item_div bg-[#e1edbd] rounded-lg p-3' key={item.id}>
+              <div className='Item_div bg-[#fff6] rounded-lg p-3' key={item.id}>
                 Name: {item.name}
                 Email: {item.email}
                 city: {item.address.city}
